@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { analyzeEcologicalState, getEnvironmentalAdvice } from '../services/geminiService';
 import { NDVIResult } from '../types';
-import { Search, Loader2, BookOpen, BarChart3, PieChart as PieIcon, LayoutGrid, Trees, Building2 } from 'lucide-react';
+import { Search, Loader2, BookOpen, BarChart3, PieChart as PieIcon, LayoutGrid, Trees, Building2, Info } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export const ModuleB: React.FC = () => {
@@ -17,9 +17,9 @@ export const ModuleB: React.FC = () => {
     setAdvice(null);
     try {
       const data = await analyzeEcologicalState(city);
-      setResults(prev => [data, ...prev].slice(0, 5));
-      const aiAdvice = await getEnvironmentalAdvice(data);
-      setAdvice(aiAdvice);
+      setResults(prev => [data, ...prev].filter((v, i, a) => a.findIndex(t => t.city === v.city) === i).slice(0, 5));
+      const staticAdvice = await getEnvironmentalAdvice(data);
+      setAdvice(staticAdvice);
     } catch (error) {
       console.error(error);
     } finally {
@@ -35,8 +35,8 @@ export const ModuleB: React.FC = () => {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
-          <h2 className="text-3xl font-black text-slate-100 uppercase tracking-tight">Эко-Аналитика</h2>
-          <p className="text-slate-400 font-medium">Мониторинг баланса экосистемы и урбанизации.</p>
+          <h2 className="text-3xl font-black text-slate-100 uppercase tracking-tight">Эко-Аналитика РФ</h2>
+          <p className="text-slate-400 font-bold text-xs uppercase tracking-widest">Локальный мониторинг NDVI без участия AI.</p>
         </div>
         
         <div className="flex gap-2">
@@ -46,8 +46,8 @@ export const ModuleB: React.FC = () => {
               type="text" 
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              className="pl-10 pr-4 py-3 bg-slate-900 border border-slate-800 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-100 placeholder-slate-600 transition-all w-full md:w-64"
-              placeholder="Введите город..."
+              className="pl-10 pr-4 py-3 bg-slate-900 border border-slate-800 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-100 placeholder-slate-600 transition-all w-full md:w-64 font-bold"
+              placeholder="Москва, Казань, Троицк..."
             />
           </div>
           <button 
@@ -64,7 +64,7 @@ export const ModuleB: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-8 space-y-6">
           {currentData ? (
-            <div className="bg-slate-900/50 border border-slate-800 p-8 rounded-3xl shadow-xl backdrop-blur-md relative overflow-hidden">
+            <div className="bg-slate-900/50 border border-slate-800 p-8 rounded-[3rem] shadow-xl backdrop-blur-md relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 opacity-5">
                 <BarChart3 className="w-48 h-48" />
               </div>
@@ -73,43 +73,46 @@ export const ModuleB: React.FC = () => {
                 <div>
                   <h3 className="text-3xl font-black text-slate-100 uppercase tracking-tighter">{currentData.city}</h3>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span className={`w-2 h-2 rounded-full animate-pulse ${greenRatio > 50 ? 'bg-emerald-500' : 'bg-amber-500'}`}></span>
                     <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">{currentData.healthStatus}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-5xl font-black text-indigo-400 leading-none">{currentData.ndviValue.toFixed(2)}</div>
+                  <div className="text-5xl font-black text-indigo-400 leading-none tracking-tighter">{currentData.ndviValue.toFixed(2)}</div>
                   <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">NDVI Score</div>
                 </div>
               </div>
 
-              {/* Расчет соотношения */}
               <div className="mb-12 space-y-6 relative z-10">
                 <div className="flex items-center justify-between">
                   <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[3px]">Баланс территории</h4>
-                  <div className="px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-[9px] font-black text-indigo-400 uppercase tracking-widest">Calculated by Gemini AI</div>
+                  <div className="px-3 py-1 bg-slate-800 border border-slate-700 rounded-full text-[8px] font-black text-slate-500 uppercase tracking-widest">Static Database v1.0</div>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4 mb-2">
-                  <div className="flex items-center gap-3 p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
-                    <Trees className="w-6 h-6 text-emerald-500" />
+                  <div className="flex items-center gap-4 p-5 bg-emerald-500/5 rounded-3xl border border-emerald-500/10">
+                    <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center">
+                      <Trees className="w-6 h-6 text-emerald-500" />
+                    </div>
                     <div>
-                      <div className="text-2xl font-black text-emerald-400 leading-none">{greenRatio}%</div>
-                      <div className="text-[8px] font-black text-emerald-600 uppercase mt-1 tracking-wider">Растительность</div>
+                      <div className="text-3xl font-black text-emerald-400 leading-none">{greenRatio}%</div>
+                      <div className="text-[9px] font-black text-emerald-600/60 uppercase mt-1 tracking-wider">Растительность</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 p-4 bg-slate-800/20 rounded-2xl border border-slate-800">
-                    <Building2 className="w-6 h-6 text-slate-500" />
+                  <div className="flex items-center gap-4 p-5 bg-slate-800/20 rounded-3xl border border-slate-800">
+                    <div className="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center">
+                      <Building2 className="w-6 h-6 text-slate-500" />
+                    </div>
                     <div>
-                      <div className="text-2xl font-black text-slate-300 leading-none">{urbanRatio}%</div>
-                      <div className="text-[8px] font-black text-slate-600 uppercase mt-1 tracking-wider">Застройка</div>
+                      <div className="text-3xl font-black text-slate-300 leading-none">{urbanRatio}%</div>
+                      <div className="text-[9px] font-black text-slate-600 uppercase mt-1 tracking-wider">Застройка</div>
                     </div>
                   </div>
                 </div>
 
-                <div className="h-4 w-full bg-slate-800/50 rounded-full overflow-hidden flex ring-4 ring-slate-950 shadow-2xl">
+                <div className="h-5 w-full bg-slate-800/50 rounded-full overflow-hidden flex ring-4 ring-slate-950 shadow-2xl">
                   <div 
-                    className="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-1000 ease-out relative shadow-[0_0_20px_rgba(16,185,129,0.3)]" 
+                    className="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-1000 ease-out relative" 
                     style={{ width: `${greenRatio}%` }} 
                   >
                     <div className="absolute inset-0 bg-white/10 animate-shimmer" style={{ backgroundSize: '200% 100%', backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)' }}></div>
@@ -123,7 +126,7 @@ export const ModuleB: React.FC = () => {
                   <AreaChart data={currentData.historicalTrend?.map((val, i) => ({ year: 2020 + i, val })) || []}>
                     <defs>
                       <linearGradient id="colorVal" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
+                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4}/>
                         <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
@@ -140,21 +143,21 @@ export const ModuleB: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="h-[500px] bg-slate-900/30 border-2 border-dashed border-slate-800 rounded-[3rem] flex flex-col items-center justify-center text-slate-500">
-              <LayoutGrid className="w-16 h-16 mb-4 opacity-5" />
-              <p className="font-black uppercase tracking-[4px] text-[10px]">Ожидание ввода данных</p>
+            <div className="h-[500px] bg-slate-900/30 border-2 border-dashed border-slate-800 rounded-[3rem] flex flex-col items-center justify-center text-slate-500 group hover:border-indigo-500/30 transition-all">
+              <LayoutGrid className="w-16 h-16 mb-4 opacity-5 group-hover:opacity-10 transition-opacity" />
+              <p className="font-black uppercase tracking-[4px] text-[10px]">Выберите город из списка для анализа</p>
             </div>
           )}
         </div>
 
         <div className="lg:col-span-4 space-y-6">
-          <div className="bg-indigo-600 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-indigo-900/40 relative overflow-hidden group">
+          <div className="bg-indigo-600 p-8 rounded-[3rem] text-white shadow-2xl shadow-indigo-900/40 relative overflow-hidden group border border-white/10">
             <div className="absolute -top-6 -right-6 p-4 opacity-10 group-hover:rotate-12 transition-transform">
                <PieIcon className="w-32 h-32" />
             </div>
             <h3 className="text-xl font-black mb-6 flex items-center gap-3 uppercase tracking-tighter">
               <BookOpen className="w-5 h-5" />
-              AI Резюме
+              Рекомендации
             </h3>
             {loading ? (
               <div className="animate-pulse space-y-4">
@@ -164,22 +167,23 @@ export const ModuleB: React.FC = () => {
               </div>
             ) : advice ? (
               <div className="text-sm leading-relaxed text-indigo-50 font-bold space-y-4">
-                {advice.split('. ').map((point, idx) => (
-                  <p key={idx} className="border-l-2 border-white/20 pl-4">{point}</p>
-                ))}
+                <p className="border-l-4 border-white/30 pl-4 py-1">{advice}</p>
+                <div className="pt-4 border-t border-white/10 flex items-start gap-2 text-[10px] uppercase font-black opacity-60">
+                  <Info className="w-3.5 h-3.5" /> База данных обновлена в марте 2025
+                </div>
               </div>
             ) : (
               <p className="text-[10px] text-indigo-100 opacity-60 leading-relaxed uppercase font-black tracking-widest">
-                Выберите город и нажмите кнопку анализа для получения рекомендаций по озеленению.
+                Выберите город и нажмите кнопку анализа для получения локальных рекомендаций.
               </p>
             )}
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 p-8 rounded-[2.5rem] space-y-6 shadow-xl">
-            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[4px]">Журнал событий</h4>
+          <div className="bg-slate-900 border border-slate-800 p-8 rounded-[3rem] space-y-6 shadow-xl">
+            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[4px]">Журнал анализа</h4>
             <div className="space-y-3">
               {results.slice(1).map((r, i) => (
-                <div key={i} className="flex items-center justify-between p-4 bg-slate-950 rounded-2xl border border-slate-800 hover:border-indigo-500/50 transition-all cursor-pointer group">
+                <div key={i} className="flex items-center justify-between p-5 bg-slate-950 rounded-2xl border border-slate-800 hover:border-indigo-500/50 transition-all cursor-pointer group">
                   <span className="text-xs font-black text-slate-400 uppercase tracking-tight group-hover:text-slate-100 transition-colors">{r.city}</span>
                   <div className="flex items-center gap-3">
                     <span className="text-[10px] font-black text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full">{r.ndviValue.toFixed(2)}</span>
