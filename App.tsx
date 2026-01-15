@@ -5,6 +5,7 @@ import { NAV_ITEMS } from './constants';
 import { ModuleA } from './components/ModuleA';
 import { ModuleB } from './components/ModuleB';
 import { ModuleC } from './components/ModuleC';
+import { ModuleAssistant } from './components/ModuleAssistant';
 import { Sparkles } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -15,6 +16,7 @@ const App: React.FC = () => {
       case 'retrospective': return <ModuleA />;
       case 'analyzer': return <ModuleB />;
       case 'recycling': return <ModuleC />;
+      case 'assistant': return <ModuleAssistant />;
       default: return <ModuleA />;
     }
   };

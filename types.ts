@@ -20,16 +20,17 @@ export interface RecyclingZone {
 
 export type ModuleType = 'retrospective' | 'analyzer' | 'recycling' | 'assistant';
 
+// Added ChatMessage interface to resolve missing member error in geminiService and ModuleAssistant
+export interface ChatMessage {
+  role: 'user' | 'model';
+  text: string;
+}
+
 export interface NDVIResult {
   city: string;
   ndviValue: number;
   percentage: number;
   healthStatus: string;
   timestamp: string;
-  historicalTrend?: number[]; // Mock trend data
-}
-
-export interface ChatMessage {
-  role: 'user' | 'model';
-  text: string;
+  historicalTrend?: number[];
 }
