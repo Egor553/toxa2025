@@ -1,0 +1,7 @@
+{
+  "name": "Зеленый навигатор (Green Navigator)",
+  "description": "Geographic Information System for greenery monitoring, retrospective satellite analysis, and eco-recycling logistics.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
