@@ -14,7 +14,7 @@
         padding: 0;
         height: 100%;
         font-family: 'Inter', sans-serif;
-        background-color: #020617; /* slate-950 */
+        background-color: #020617;
       }
       #root {
         height: 100%;
@@ -23,8 +23,8 @@
       .leaflet-container {
         width: 100%;
         height: 100%;
-        border-radius: 2.5rem;
-        filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        border-radius: 2rem;
+        /* Убираем инверсию для лучшей читаемости русских названий */
       }
       .leaflet-popup-content-wrapper {
         background: #0f172a !important;
@@ -49,12 +49,13 @@
     "react": "https://esm.sh/react@19.0.0",
     "react/": "https://esm.sh/react@19.0.0/",
     "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
     "react-dom/": "https://esm.sh/react-dom@19.0.0/",
-    "@google/genai": "https://esm.sh/@google/genai@1.36.0",
-    "recharts": "https://esm.sh/recharts@3.6.0?external=react,react-dom",
     "lucide-react": "https://esm.sh/lucide-react@0.462.0?external=react",
+    "recharts": "https://esm.sh/recharts@3.6.0?external=react,react-dom",
     "leaflet": "https://esm.sh/leaflet@1.9.4",
-    "react-leaflet": "https://esm.sh/react-leaflet@5.0.0?external=react,react-dom,leaflet"
+    "react-leaflet": "https://esm.sh/react-leaflet@5.0.0?external=react,react-dom,leaflet",
+    "@google/genai": "https://esm.sh/@google/genai@1.36.0"
   }
 }
 </script>

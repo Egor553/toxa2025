@@ -36,7 +36,7 @@ export const ModuleB: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-1">
           <h2 className="text-3xl font-black text-slate-100 uppercase tracking-tight">Эко-Аналитика РФ</h2>
-          <p className="text-slate-400 font-bold text-xs uppercase tracking-widest">Локальный мониторинг NDVI без участия AI.</p>
+          <p className="text-slate-400 font-bold text-xs uppercase tracking-widest">Локальный мониторинг NDVI.</p>
         </div>
         
         <div className="flex gap-2">
@@ -47,7 +47,7 @@ export const ModuleB: React.FC = () => {
               value={city}
               onChange={(e) => setCity(e.target.value)}
               className="pl-10 pr-4 py-3 bg-slate-900 border border-slate-800 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-100 placeholder-slate-600 transition-all w-full md:w-64 font-bold"
-              placeholder="Москва, Казань, Троицк..."
+              placeholder="Введите город..."
             />
           </div>
           <button 
@@ -84,11 +84,6 @@ export const ModuleB: React.FC = () => {
               </div>
 
               <div className="mb-12 space-y-6 relative z-10">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[3px]">Баланс территории</h4>
-                  <div className="px-3 py-1 bg-slate-800 border border-slate-700 rounded-full text-[8px] font-black text-slate-500 uppercase tracking-widest">Static Database v1.0</div>
-                </div>
-                
                 <div className="grid grid-cols-2 gap-4 mb-2">
                   <div className="flex items-center gap-4 p-5 bg-emerald-500/5 rounded-3xl border border-emerald-500/10">
                     <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center">
@@ -96,7 +91,7 @@ export const ModuleB: React.FC = () => {
                     </div>
                     <div>
                       <div className="text-3xl font-black text-emerald-400 leading-none">{greenRatio}%</div>
-                      <div className="text-[9px] font-black text-emerald-600/60 uppercase mt-1 tracking-wider">Растительность</div>
+                      <div className="text-[9px] font-black text-emerald-600/60 uppercase mt-1 tracking-wider">Лес</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 p-5 bg-slate-800/20 rounded-3xl border border-slate-800">
@@ -105,19 +100,9 @@ export const ModuleB: React.FC = () => {
                     </div>
                     <div>
                       <div className="text-3xl font-black text-slate-300 leading-none">{urbanRatio}%</div>
-                      <div className="text-[9px] font-black text-slate-600 uppercase mt-1 tracking-wider">Застройка</div>
+                      <div className="text-[9px] font-black text-slate-600 uppercase mt-1 tracking-wider">Город</div>
                     </div>
                   </div>
-                </div>
-
-                <div className="h-5 w-full bg-slate-800/50 rounded-full overflow-hidden flex ring-4 ring-slate-950 shadow-2xl">
-                  <div 
-                    className="h-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-1000 ease-out relative" 
-                    style={{ width: `${greenRatio}%` }} 
-                  >
-                    <div className="absolute inset-0 bg-white/10 animate-shimmer" style={{ backgroundSize: '200% 100%', backgroundImage: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)' }}></div>
-                  </div>
-                  <div className="h-full bg-slate-700" style={{ width: `${urbanRatio}%` }} />
                 </div>
               </div>
 
@@ -134,7 +119,7 @@ export const ModuleB: React.FC = () => {
                     <XAxis dataKey="year" stroke="#475569" fontSize={10} axisLine={false} tickLine={false} />
                     <YAxis stroke="#475569" fontSize={10} domain={[0, 1]} axisLine={false} tickLine={false} />
                     <Tooltip 
-                      contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '16px', boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)' }}
+                      contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #1e293b', borderRadius: '16px' }}
                       itemStyle={{ color: '#818cf8', fontWeight: '900', fontSize: '12px', textTransform: 'uppercase' }}
                     />
                     <Area type="monotone" dataKey="val" stroke="#6366f1" strokeWidth={4} fillOpacity={1} fill="url(#colorVal)" />
@@ -143,18 +128,15 @@ export const ModuleB: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="h-[500px] bg-slate-900/30 border-2 border-dashed border-slate-800 rounded-[3rem] flex flex-col items-center justify-center text-slate-500 group hover:border-indigo-500/30 transition-all">
-              <LayoutGrid className="w-16 h-16 mb-4 opacity-5 group-hover:opacity-10 transition-opacity" />
-              <p className="font-black uppercase tracking-[4px] text-[10px]">Выберите город из списка для анализа</p>
+            <div className="h-[120px] bg-slate-900/30 border-2 border-dashed border-slate-800 rounded-[3rem] flex flex-col items-center justify-center text-slate-500 group hover:border-emerald-500/30 transition-all">
+              <LayoutGrid className="w-10 h-10 mb-2 opacity-5 group-hover:opacity-10 transition-opacity" />
+              <p className="font-black uppercase tracking-[4px] text-[9px]">Выберите город из списка для анализа</p>
             </div>
           )}
         </div>
 
         <div className="lg:col-span-4 space-y-6">
           <div className="bg-indigo-600 p-8 rounded-[3rem] text-white shadow-2xl shadow-indigo-900/40 relative overflow-hidden group border border-white/10">
-            <div className="absolute -top-6 -right-6 p-4 opacity-10 group-hover:rotate-12 transition-transform">
-               <PieIcon className="w-32 h-32" />
-            </div>
             <h3 className="text-xl font-black mb-6 flex items-center gap-3 uppercase tracking-tighter">
               <BookOpen className="w-5 h-5" />
               Рекомендации
@@ -163,39 +145,19 @@ export const ModuleB: React.FC = () => {
               <div className="animate-pulse space-y-4">
                 <div className="h-3 bg-white/20 rounded-full w-3/4"></div>
                 <div className="h-3 bg-white/20 rounded-full w-full"></div>
-                <div className="h-3 bg-white/20 rounded-full w-2/3"></div>
               </div>
             ) : advice ? (
               <div className="text-sm leading-relaxed text-indigo-50 font-bold space-y-4">
                 <p className="border-l-4 border-white/30 pl-4 py-1">{advice}</p>
                 <div className="pt-4 border-t border-white/10 flex items-start gap-2 text-[10px] uppercase font-black opacity-60">
-                  <Info className="w-3.5 h-3.5" /> База данных обновлена в марте 2025
+                  <Info className="w-3.5 h-3.5" /> Актуально: 2025
                 </div>
               </div>
             ) : (
               <p className="text-[10px] text-indigo-100 opacity-60 leading-relaxed uppercase font-black tracking-widest">
-                Выберите город и нажмите кнопку анализа для получения локальных рекомендаций.
+                Ожидание данных...
               </p>
             )}
-          </div>
-
-          <div className="bg-slate-900 border border-slate-800 p-8 rounded-[3rem] space-y-6 shadow-xl">
-            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[4px]">Журнал анализа</h4>
-            <div className="space-y-3">
-              {results.slice(1).map((r, i) => (
-                <div key={i} className="flex items-center justify-between p-5 bg-slate-950 rounded-2xl border border-slate-800 hover:border-indigo-500/50 transition-all cursor-pointer group">
-                  <span className="text-xs font-black text-slate-400 uppercase tracking-tight group-hover:text-slate-100 transition-colors">{r.city}</span>
-                  <div className="flex items-center gap-3">
-                    <span className="text-[10px] font-black text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full">{r.ndviValue.toFixed(2)}</span>
-                  </div>
-                </div>
-              ))}
-              {results.length <= 1 && (
-                <div className="text-center py-12">
-                   <p className="text-[9px] text-slate-600 uppercase font-black tracking-widest">История пуста</p>
-                </div>
-              )}
-            </div>
           </div>
         </div>
       </div>
