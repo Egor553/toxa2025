@@ -77,6 +77,7 @@ export const HistorySwipeMap: React.FC<Props> = ({ leftLayer, rightLayer, center
           zoom={mapState.zoom} 
           className="h-full w-full" 
           zoomControl={false}
+          attributionControl={false}
           whenReady={() => setIsLoaded(true)}
         >
           {rightLayer.isModern ? (
@@ -102,6 +103,7 @@ export const HistorySwipeMap: React.FC<Props> = ({ leftLayer, rightLayer, center
             zoom={mapState.zoom} 
             className="h-full w-full" 
             zoomControl={false}
+            attributionControl={false}
             dragging={true}
             scrollWheelZoom={true}
           >

@@ -1,10 +1,10 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { RECYCLING_POINTS } from '../constants';
 import { RecyclingPoint } from '../types';
-import { MapPin, Search, X, Map as MapIcon, ChevronRight, Globe, ChevronLeft, Recycle } from 'lucide-react';
+import { MapPin, Search, X, Map as MapIcon, ChevronRight, Globe, ChevronLeft, Recycle, Filter, ChevronDown, Check } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 4;
 const DG_API_KEY = '27e355f4-05c3-46d8-86c6-03262619cdf4';
@@ -33,9 +33,11 @@ const MapEffects = ({ center, zoom = 10 }: { center: [number, number], zoom?: nu
 export const ModuleC: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<string>('all');
+  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
   const [selectedPoint, setSelectedPoint] = useState<RecyclingPoint | null>(null);
   const [mapState, setMapState] = useState({ center: [55.7558, 37.6173] as [number, number], zoom: 10 });
   const [currentPage, setCurrentPage] = useState(0);
+  const filterRef = useRef<HTMLDivElement>(null);
 
   const filteredPoints = useMemo(() => {
     return RECYCLING_POINTS.filter(p => {
@@ -50,11 +52,29 @@ export const ModuleC: React.FC = () => {
     setCurrentPage(0);
   }, [searchQuery, activeFilter]);
 
+  // Закрытие меню фильтров при клике вне его
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setIsFilterMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const totalPages = Math.ceil(filteredPoints.length / ITEMS_PER_PAGE);
   const paginatedPoints = filteredPoints.slice(
     currentPage * ITEMS_PER_PAGE, 
     (currentPage + 1) * ITEMS_PER_PAGE
   );
+
+  const filterOptions = [
+    { id: 'plastic', label: 'Пластик', color: 'text-emerald-400' },
+    { id: 'paper', label: 'Бумага', color: 'text-indigo-400' },
+    { id: 'glass', label: 'Стекло', color: 'text-amber-400' },
+    { id: 'batteries', label: 'Батарейки', color: 'text-rose-400' },
+  ];
 
   return (
     <div className="space-y-4 md:space-y-6 animate-in fade-in duration-700 h-full flex flex-col pb-20 lg:pb-0">
@@ -79,25 +99,56 @@ export const ModuleC: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide shrink-0 -mx-1 px-1">
+      {/* Новая система фильтров */}
+      <div className="flex items-center gap-2 shrink-0">
+        <button 
+          onClick={() => { setActiveFilter('all'); setIsFilterMenuOpen(false); }}
+          className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border flex items-center gap-2 ${activeFilter === 'all' ? 'bg-emerald-600 border-emerald-400 text-white shadow-lg' : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'}`}
+        >
+          Все
+        </button>
+        
+        <div className="relative" ref={filterRef}>
+          <button 
+            onClick={() => setIsFilterMenuOpen(!isFilterMenuOpen)}
+            className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border flex items-center gap-2 ${activeFilter !== 'all' ? 'bg-indigo-600 border-indigo-400 text-white' : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'}`}
+          >
+            <Filter className="w-3.5 h-3.5" />
+            {activeFilter === 'all' ? 'Категории' : filterOptions.find(o => o.id === activeFilter)?.label}
+            <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isFilterMenuOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {isFilterMenuOpen && (
+            <div className="absolute top-full left-0 mt-2 w-56 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl z-[2000] p-2 animate-in fade-in zoom-in-95 duration-200">
+              <div className="grid grid-cols-1 gap-1">
+                {filterOptions.map((opt) => (
+                  <button
+                    key={opt.id}
+                    onClick={() => { setActiveFilter(opt.id); setIsFilterMenuOpen(false); }}
+                    className={`flex items-center justify-between w-full px-4 py-3 rounded-xl transition-all ${activeFilter === opt.id ? 'bg-slate-800 text-white' : 'hover:bg-slate-800/50 text-slate-400'}`}
+                  >
+                    <span className={`text-[10px] font-black uppercase tracking-widest ${opt.color}`}>{opt.label}</span>
+                    {activeFilter === opt.id && <Check className="w-4 h-4 text-emerald-500" />}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
         <button 
           onClick={() => {setMapState({center: [61.5, 105.3], zoom: 3}); setSelectedPoint(null);}}
-          className="px-4 py-2 md:px-5 md:py-2.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 flex items-center gap-2 whitespace-nowrap shrink-0"
+          className="ml-auto px-4 py-2.5 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest bg-slate-900 border border-slate-800 text-slate-500 hover:text-slate-200 flex items-center gap-2 transition-all"
         >
-          <Globe className="w-3 h-3" /> Россия
+          <Globe className="w-3.5 h-3.5" /> <span className="hidden sm:inline">РФ</span>
         </button>
-        {['all', 'plastic', 'paper', 'glass', 'batteries'].map(f => (
-          <button key={f} onClick={() => setActiveFilter(f)} className={`px-4 py-2 md:px-5 md:py-2.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all border whitespace-nowrap shrink-0 ${activeFilter === f ? 'bg-emerald-600 border-emerald-400 text-white shadow-xl shadow-emerald-900/40' : 'bg-slate-900 border-slate-800 text-slate-500 hover:text-slate-200'}`}>
-            {f === 'all' ? 'Все' : f === 'plastic' ? 'Пластик' : f === 'paper' ? 'Бумага' : f === 'glass' ? 'Стекло' : 'Батарейки'}
-          </button>
-        ))}
       </div>
 
       <div className="relative flex-1 min-h-[400px] md:min-h-[500px] flex flex-col lg:flex-row gap-6">
         <div className="hidden lg:flex flex-col w-72 xl:w-80 bg-slate-900/50 border border-slate-800 rounded-[2.5rem] overflow-hidden shrink-0 backdrop-blur-md shadow-2xl">
           <div className="p-6 border-b border-slate-800 bg-slate-900/80">
             <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-              <Recycle className="w-3 h-3 text-emerald-500" /> Объекты
+              <Recycle className="w-3 h-3 text-emerald-500" /> Объекты ({filteredPoints.length})
             </h3>
           </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide">
@@ -151,7 +202,13 @@ export const ModuleC: React.FC = () => {
         </div>
 
         <div className="flex-1 relative bg-slate-900 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden border border-slate-800 shadow-2xl group">
-          <MapContainer center={mapState.center} zoom={mapState.zoom} className="h-full w-full" zoomControl={false}>
+          <MapContainer 
+            center={mapState.center} 
+            zoom={mapState.zoom} 
+            className="h-full w-full" 
+            zoomControl={false}
+            attributionControl={false}
+          >
             <TileLayer 
               url={`https://tile1.maps.2gis.com/tiles?x={x}&y={y}&z={z}&v=1.1&key=${DG_API_KEY}`} 
               attribution='&copy; 2GIS' 
