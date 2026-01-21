@@ -12,7 +12,6 @@ interface MapSyncProps {
   zoom: number;
 }
 
-// Вспомогательный компонент для синхронизации движений карт
 const MapSync = ({ onMove, center, zoom }: MapSyncProps) => {
   const map = useMap();
   
@@ -63,15 +62,15 @@ export const HistorySwipeMap: React.FC<Props> = ({ leftLayer, rightLayer, center
   };
 
   return (
-    <div className="relative w-full h-[500px] md:h-[650px] bg-slate-900 rounded-[3rem] overflow-hidden border border-slate-800 shadow-2xl group select-none">
+    <div className="relative w-full h-[400px] md:h-[500px] lg:h-[650px] bg-slate-900 rounded-[2rem] md:rounded-[3rem] overflow-hidden border border-slate-800 shadow-2xl group select-none">
       {!isLoaded && (
-        <div className="absolute inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center gap-4">
-          <Loader2 className="w-10 h-10 text-emerald-500 animate-spin" />
-          <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Инициализация слоев...</p>
+        <div className="absolute inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center gap-4 p-4 text-center">
+          <Loader2 className="w-8 h-8 md:w-10 md:h-10 text-emerald-500 animate-spin" />
+          <p className="text-[8px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest">Инициализация слоев...</p>
         </div>
       )}
 
-      {/* Контейнер правой карты (Нижний слой) */}
+      {/* Контейнер правой карты */}
       <div className="absolute inset-0 z-0">
         <MapContainer 
           center={mapState.center} 
@@ -92,7 +91,7 @@ export const HistorySwipeMap: React.FC<Props> = ({ leftLayer, rightLayer, center
         </MapContainer>
       </div>
 
-      {/* Контейнер левой карты (Верхний слой с обрезкой) */}
+      {/* Контейнер левой карты */}
       <div 
         className="absolute inset-0 z-10 overflow-hidden pointer-events-none"
         style={{ clipPath: `inset(0 ${100 - sliderPos}% 0 0)` }}
@@ -119,42 +118,42 @@ export const HistorySwipeMap: React.FC<Props> = ({ leftLayer, rightLayer, center
         </div>
       </div>
 
-      {/* Метки слоев */}
-      <div className="absolute top-8 left-8 z-50 pointer-events-none">
-        <div className="bg-emerald-600 text-white px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-2xl border border-white/10 flex items-center gap-2 backdrop-blur-md">
+      {/* Метки слоев - Уменьшены для мобильных */}
+      <div className="absolute top-4 left-4 md:top-8 md:left-8 z-50 pointer-events-none">
+        <div className="bg-emerald-600 text-white px-3 py-1.5 md:px-5 md:py-2.5 rounded-lg md:rounded-2xl text-[7px] md:text-[10px] font-black uppercase tracking-widest shadow-2xl border border-white/10 flex items-center gap-2 backdrop-blur-md">
            {leftLayer.label}
         </div>
       </div>
-      <div className="absolute top-8 right-8 z-50 pointer-events-none">
-        <div className="bg-slate-900/90 text-slate-300 px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest backdrop-blur-xl border border-slate-700 shadow-2xl">
+      <div className="absolute top-4 right-4 md:top-8 md:right-8 z-50 pointer-events-none">
+        <div className="bg-slate-900/90 text-slate-300 px-3 py-1.5 md:px-5 md:py-2.5 rounded-lg md:rounded-2xl text-[7px] md:text-[10px] font-black uppercase tracking-widest backdrop-blur-xl border border-slate-700 shadow-2xl">
            {rightLayer.label}
         </div>
       </div>
 
-      {/* Центральный разделитель (Handle) */}
+      {/* Центральный разделитель */}
       <div 
-        className="absolute top-0 bottom-0 z-50 w-1 bg-emerald-500 pointer-events-none shadow-[0_0_30px_rgba(16,185,129,0.8)]"
+        className="absolute top-0 bottom-0 z-50 w-0.5 md:w-1 bg-emerald-500 pointer-events-none shadow-[0_0_20px_rgba(16,185,129,0.8)]"
         style={{ left: `${sliderPos}%` }}
       >
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 bg-emerald-600 rounded-2xl border-4 border-slate-950 flex items-center justify-center shadow-2xl transition-transform hover:scale-110 pointer-events-auto cursor-ew-resize">
-           <Maximize2 className="w-6 h-6 text-white rotate-90" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 md:w-14 md:h-14 bg-emerald-600 rounded-lg md:rounded-2xl border-2 md:border-4 border-slate-950 flex items-center justify-center shadow-2xl cursor-ew-resize active:scale-125 transition-transform">
+           <Maximize2 className="w-4 h-4 md:w-6 md:h-6 text-white rotate-90" />
         </div>
       </div>
 
-      {/* Невидимый инпут слайдера поверх всего для управления */}
+      {/* Невидимый инпут слайдера */}
       <input 
         type="range" 
         min="0" 
         max="100" 
         value={sliderPos} 
         onChange={handleSliderChange}
-        className="absolute inset-x-0 bottom-12 z-[60] opacity-0 cursor-ew-resize w-full h-12"
+        className="absolute inset-x-0 bottom-8 md:bottom-12 z-[60] opacity-0 cursor-ew-resize w-full h-12"
       />
 
       {/* Подсказка */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[55] flex items-center gap-2 bg-slate-950/80 backdrop-blur-md px-4 py-2 rounded-full border border-slate-800 pointer-events-none">
-         <Info className="w-3 h-3 text-emerald-500" />
-         <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Тяните слайдер для сравнения</span>
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[55] flex items-center gap-2 bg-slate-950/80 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-slate-800 pointer-events-none whitespace-nowrap">
+         <Info className="w-2.5 h-2.5 md:w-3 md:h-3 text-emerald-500" />
+         <span className="text-[7px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest">Сравнение</span>
       </div>
     </div>
   );

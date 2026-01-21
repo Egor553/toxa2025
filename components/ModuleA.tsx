@@ -51,168 +51,171 @@ export const ModuleA: React.FC = () => {
   const afterLayer = HISTORICAL_DATA[yearAfter];
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-24">
-      {/* Контроллеры времени */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-slate-900/50 p-8 rounded-[3rem] border border-slate-800 backdrop-blur-md shadow-2xl">
-        <div className="space-y-2">
+    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500 pb-20 md:pb-24">
+      {/* Контроллеры времени - Адаптированы под мобильные */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 md:gap-6 bg-slate-900/50 p-6 md:p-8 rounded-[2rem] md:rounded-[3rem] border border-slate-800 backdrop-blur-md shadow-2xl">
+        <div className="space-y-1">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-900/40">
-               <FileText className="w-7 h-7 text-white" />
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-emerald-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-900/40 shrink-0">
+               <FileText className="w-5 h-5 md:w-7 md:h-7 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-black text-slate-100 uppercase tracking-tighter">Глава 4. Анализ динамики</h2>
-              <p className="text-emerald-500 text-[10px] font-black uppercase tracking-widest mt-1">Троицк • Сравнение архивных слоев (Swipe Map)</p>
+              <h2 className="text-xl md:text-2xl font-black text-slate-100 uppercase tracking-tighter">Анализ динамики</h2>
+              <p className="text-emerald-500 text-[8px] md:text-[10px] font-black uppercase tracking-widest mt-0.5 md:mt-1">Сравнение архивных слоев</p>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-6 bg-slate-950 p-4 rounded-3xl border border-slate-800">
-          <div className="space-y-2">
-            <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest ml-1">Состояние "БЫЛО"</label>
+        <div className="flex items-center gap-3 md:gap-6 bg-slate-950 p-3 md:p-4 rounded-2xl md:rounded-3xl border border-slate-800 w-full lg:w-auto overflow-x-auto scrollbar-hide">
+          <div className="space-y-1 min-w-[100px] flex-1">
+            <label className="text-[8px] font-black text-slate-600 uppercase tracking-widest ml-1">БЫЛО</label>
             <select 
               value={yearBefore} 
               onChange={(e) => setYearBefore(e.target.value)}
-              className="bg-slate-900 text-emerald-400 font-black text-xs px-4 py-2 rounded-xl border border-slate-800 outline-none appearance-none cursor-pointer hover:border-emerald-500/50 transition-colors"
+              className="w-full bg-slate-900 text-emerald-400 font-black text-[10px] md:text-xs px-3 py-2 rounded-xl border border-slate-800 outline-none appearance-none cursor-pointer"
             >
               {Object.keys(HISTORICAL_DATA).filter(y => y !== 'LIVE').map(y => <option key={y} value={y}>{y} год</option>)}
             </select>
           </div>
           
-          <ArrowRight className="text-slate-700 mt-5 hidden md:block" />
+          <ArrowRight className="text-slate-700 mt-4 shrink-0 w-4 h-4" />
 
-          <div className="space-y-2">
-            <label className="text-[9px] font-black text-slate-600 uppercase tracking-widest ml-1">Состояние "СТАЛО"</label>
+          <div className="space-y-1 min-w-[100px] flex-1">
+            <label className="text-[8px] font-black text-slate-600 uppercase tracking-widest ml-1">СТАЛО</label>
             <select 
               value={yearAfter} 
               onChange={(e) => setYearAfter(e.target.value)}
-              className="bg-slate-900 text-slate-100 font-black text-xs px-4 py-2 rounded-xl border border-slate-800 outline-none appearance-none cursor-pointer hover:border-emerald-500/50 transition-colors"
+              className="w-full bg-slate-900 text-slate-100 font-black text-[10px] md:text-xs px-3 py-2 rounded-xl border border-slate-800 outline-none appearance-none cursor-pointer"
             >
-              {Object.keys(HISTORICAL_DATA).map(y => <option key={y} value={y}>{y === 'LIVE' ? '2025 (Актуальная карта)' : `${y} год`}</option>)}
+              {Object.keys(HISTORICAL_DATA).map(y => <option key={y} value={y}>{y === 'LIVE' ? '2025' : `${y} год`}</option>)}
             </select>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-8 space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
+        <div className="lg:col-span-8 space-y-6 md:space-y-8">
           {/* Swipe Map Component */}
           <HistorySwipeMap 
             leftLayer={{
               url: beforeLayer.url,
               bounds: TROITSK_BOUNDS,
               isModern: false,
-              label: `${yearBefore} (ПРОШЛОЕ)`
+              label: `${yearBefore}`
             }}
             rightLayer={{
               url: afterLayer.url,
               bounds: TROITSK_BOUNDS,
               isModern: !!afterLayer.isModern,
-              label: `${yearAfter === 'LIVE' ? '2025' : yearAfter} (НАСТОЯЩЕЕ)`
+              label: `${yearAfter === 'LIVE' ? '2025' : yearAfter}`
             }}
             center={TROITSK_COORDS}
             zoom={13}
           />
 
-          {/* Руководство и Методика */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-slate-900 border border-slate-800 p-8 rounded-[2.5rem] space-y-4 shadow-xl">
+          {/* Руководство и Методика - Стекирование на мобильных */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            <div className="bg-slate-900 border border-slate-800 p-6 md:p-8 rounded-[2rem] space-y-3 shadow-xl">
                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 text-emerald-500">
+                  <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 text-emerald-500 shrink-0">
                     <Database className="w-5 h-5" />
                   </div>
-                  <h3 className="font-black text-white uppercase text-xs tracking-widest">Методика QGIS</h3>
+                  <h3 className="font-black text-white uppercase text-[10px] md:text-xs tracking-widest">Методика QGIS</h3>
                </div>
-               <p className="text-[11px] text-slate-400 leading-relaxed font-bold">
-                 Для визуализации динамики изменений был разработан механизм «Сравнение слоев», использующий метод <b>Image Overlay</b>. Снимки Landsat и Sentinel были предварительно обработаны и геопривязаны для точного совмещения с векторной подложкой 2ГИС.
+               <p className="text-[10px] md:text-[11px] text-slate-400 leading-relaxed font-bold">
+                 Для визуализации динамики используется метод <b>Image Overlay</b>. Снимки Landsat и Sentinel прецизионно совмещены с подложкой 2ГИС.
                </p>
             </div>
-            <div className="bg-slate-900 border border-slate-800 p-8 rounded-[2.5rem] space-y-4 shadow-xl border-emerald-500/20">
+            <div className="bg-slate-900 border border-slate-800 p-6 md:p-8 rounded-[2rem] space-y-3 shadow-xl border-emerald-500/20">
                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center border border-indigo-500/20 text-indigo-500">
+                  <div className="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center border border-indigo-500/20 text-indigo-500 shrink-0">
                     <Info className="w-5 h-5" />
                   </div>
-                  <h3 className="font-black text-white uppercase text-xs tracking-widest">Инструкция ГИС</h3>
+                  <h3 className="font-black text-white uppercase text-[10px] md:text-xs tracking-widest">Инструкция ГИС</h3>
                </div>
-               <p className="text-[11px] text-slate-400 leading-relaxed font-bold">
-                 Перемещайте <b>вертикальный слайдер</b> (бирюзовую линию) в центре карты. Вы увидите, как на месте лесных массивов 2000 года появляются современные жилые комплексы и социальные объекты.
+               <p className="text-[10px] md:text-[11px] text-slate-400 leading-relaxed font-bold">
+                 Перемещайте <b>вертикальный слайдер</b> в центре карты, чтобы выявить антропогенную трансформацию ландшафта.
                </p>
             </div>
           </div>
           
-          {/* Результаты внедрения (Таблица) */}
-          <div className="bg-slate-900/80 border border-slate-800 p-8 rounded-[3rem] shadow-xl">
+          {/* Результаты внедрения (Таблица) - Горизонтальный скролл */}
+          <div className="bg-slate-900/80 border border-slate-800 p-6 md:p-8 rounded-[2rem] md:rounded-[3rem] shadow-xl overflow-hidden">
              <div className="flex items-center gap-3 mb-6">
-                <Table className="w-5 h-5 text-emerald-500" />
-                <h3 className="font-black text-slate-100 uppercase text-xs tracking-widest">Результаты анализа площади (Егор Токарев)</h3>
+                <Table className="w-5 h-5 text-emerald-500 shrink-0" />
+                <h3 className="font-black text-slate-100 uppercase text-[10px] md:text-xs tracking-widest">Результаты анализа (Токарев Е.)</h3>
              </div>
-             <table className="w-full text-left">
-               <thead>
-                 <tr className="border-b border-slate-800 text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                   <th className="py-4">Год съемки</th>
-                   <th className="py-4">Лесной покров (га)</th>
-                   <th className="py-4">Процент потери</th>
-                   <th className="py-4">Тип данных</th>
-                 </tr>
-               </thead>
-               <tbody className="text-xs font-bold text-slate-300">
-                 {Object.entries(HISTORICAL_DATA).map(([year, data], idx) => (
-                   <tr key={year} className={`border-b border-slate-800/50 hover:bg-slate-800/10 transition-colors ${yearBefore === year || yearAfter === year ? 'bg-emerald-500/5' : ''}`}>
-                     <td className="py-4">{year === 'LIVE' ? '2025' : year}</td>
-                     <td className="py-4 text-emerald-400">{data.area || '—'} га</td>
-                     <td className={`py-4 ${idx === 0 ? 'text-slate-500' : 'text-red-500'}`}>
-                       {idx === 0 ? 'Базовый' : data.area ? `-${Math.round((1 - data.area/1380)*100)}%` : '—'}
-                     </td>
-                     <td className="py-4 text-[9px] uppercase text-slate-600">{data.label.includes('2ГИС') ? 'ГИС 2GIS' : data.label.split('(')[1].replace(')', '')}</td>
+             <div className="overflow-x-auto scrollbar-hide">
+               <table className="w-full text-left min-w-[500px]">
+                 <thead>
+                   <tr className="border-b border-slate-800 text-[8px] md:text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                     <th className="py-4 px-2">Год</th>
+                     <th className="py-4 px-2">Лес (га)</th>
+                     <th className="py-4 px-2">Потеря</th>
+                     <th className="py-4 px-2">Тип данных</th>
                    </tr>
-                 ))}
-               </tbody>
-             </table>
+                 </thead>
+                 <tbody className="text-[10px] md:text-xs font-bold text-slate-300">
+                   {Object.entries(HISTORICAL_DATA).map(([year, data], idx) => (
+                     <tr key={year} className={`border-b border-slate-800/50 hover:bg-slate-800/10 transition-colors ${yearBefore === year || yearAfter === year ? 'bg-emerald-500/5' : ''}`}>
+                       <td className="py-4 px-2">{year === 'LIVE' ? '2025' : year}</td>
+                       <td className="py-4 px-2 text-emerald-400">{data.area || '—'}</td>
+                       <td className={`py-4 px-2 ${idx === 0 ? 'text-slate-500' : 'text-red-500'}`}>
+                         {idx === 0 ? 'Баз.' : data.area ? `-${Math.round((1 - data.area/1380)*100)}%` : '—'}
+                       </td>
+                       <td className="py-4 px-2 text-[8px] md:text-[9px] uppercase text-slate-600 truncate max-w-[120px]">{data.label.includes('2ГИС') ? 'ГИС' : data.label.split('(')[1].replace(')', '')}</td>
+                     </tr>
+                   ))}
+                 </tbody>
+               </table>
+             </div>
           </div>
         </div>
         
+        {/* Боковая панель AI - Снизу на мобильных */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="bg-slate-900 border border-slate-800 p-8 rounded-[2.5rem] shadow-xl space-y-6 relative overflow-hidden group">
+          <div className="bg-slate-900 border border-slate-800 p-6 md:p-8 rounded-[2rem] shadow-xl space-y-6 relative overflow-hidden group">
             <div className="flex items-center gap-3 relative z-10">
-              <div className="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-400 border border-indigo-500/20">
+              <div className="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center text-indigo-400 border border-indigo-500/20 shrink-0">
                 <Sparkles className="w-5 h-5" />
               </div>
-              <h3 className="font-black text-slate-100 uppercase text-xs tracking-widest">AI Экспертиза</h3>
+              <h3 className="font-black text-slate-100 uppercase text-[10px] md:text-xs tracking-widest">AI Экспертиза</h3>
             </div>
             
             {loading ? (
               <div className="flex flex-col items-center justify-center py-12 space-y-4">
                 <Loader2 className="w-10 h-10 text-emerald-500 animate-spin" />
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Нейросеть Gemini анализирует...</p>
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest tracking-tighter">Анализ нейросетью...</p>
               </div>
             ) : (
               <div className="space-y-4 relative z-10">
-                <div className="p-6 bg-slate-950 rounded-3xl border border-slate-800/50 shadow-inner min-h-[160px]">
-                  <p className="text-xs text-slate-300 leading-relaxed font-semibold italic">
+                <div className="p-5 md:p-6 bg-slate-950 rounded-2xl md:rounded-3xl border border-slate-800/50 shadow-inner min-h-[140px]">
+                  <p className="text-[11px] md:text-xs text-slate-300 leading-relaxed font-semibold italic">
                     "{aiReport}"
                   </p>
                 </div>
                 <div className="p-4 bg-red-500/10 rounded-2xl border border-red-500/20 flex items-center justify-between">
-                  <span className="text-[9px] font-black text-red-400 uppercase tracking-[0.2em]">Прогноз деградации:</span>
-                  <span className="text-base font-black text-red-500 uppercase">Высокий</span>
+                  <span className="text-[8px] md:text-[9px] font-black text-red-400 uppercase tracking-[0.2em]">Прогноз:</span>
+                  <span className="text-xs md:text-base font-black text-red-500 uppercase">Критический</span>
                 </div>
               </div>
             )}
 
             <button 
               onClick={fetchAiReport}
-              className="w-full py-4 bg-emerald-600/10 text-emerald-400 border border-emerald-500/20 font-black rounded-xl text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-600 hover:text-white transition-all shadow-lg"
+              className="w-full py-4 bg-emerald-600/10 text-emerald-400 border border-emerald-500/20 font-black rounded-xl text-[10px] uppercase tracking-[0.2em] hover:bg-emerald-600 hover:text-white transition-all shadow-lg active:scale-95"
             >
-              Синтезировать отчет
+              Синтез данных
             </button>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 p-8 rounded-[2.5rem] shadow-xl">
-             <div className="flex items-center gap-2 mb-4">
-                <Microscope className="w-4 h-4 text-emerald-500" />
+          <div className="bg-slate-900 border border-slate-800 p-6 md:p-8 rounded-[2rem] space-y-3 shadow-xl">
+             <div className="flex items-center gap-2 mb-2">
+                <Microscope className="w-4 h-4 text-emerald-500 shrink-0" />
                 <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Научный вывод</span>
              </div>
-             <p className="text-[11px] text-slate-400 leading-relaxed font-bold">
-               Визуализация «Было/Стало» оказывает сильное воздействие, наглядно подтверждая потерю более 35% лесного покрова в северо-восточной части Троицка за последние 20 лет.
+             <p className="text-[10px] md:text-[11px] text-slate-400 leading-relaxed font-bold">
+               Визуализация наглядно подтверждает потерю более 35% лесного покрова в северо-восточной части Троицка за 20 лет.
              </p>
           </div>
         </div>
