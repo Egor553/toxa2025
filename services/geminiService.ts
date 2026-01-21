@@ -47,7 +47,7 @@ export const analyzeEcologicalState = async (cityName: string): Promise<NDVIResu
  */
 export const getHistoricalReport = async (city: string, yearBefore: string, yearAfter: string): Promise<string> => {
   const ai = getAI();
-  const prompt = `Ты — научный ассистент. Анализируешь Троицк. 
+  const prompt = `Ты - научный ассистент. Анализируешь Троицк. 
     На снимках видна трансформация: 
     - В 1984 был сплошной лесной массив. 
     - В 2011-2017 появилась фрагментация из-за ЖК "Солнечный" и дорог. 
@@ -85,7 +85,7 @@ export const ecoAssistantChat = async (history: ChatMessage[], message: string):
       model: 'gemini-3-flash-preview',
       contents: contents as any,
       config: {
-        systemInstruction: "Ты — ИИ 'Зеленого Навигатора', созданный Егором Токаревым (9И). Ты эксперт по Троицку. Ты знаешь про снимки Sentinel и Maxar, которые загружены в систему. Отвечай на вопросы о вырубке леса в Троицке и пунктах переработки (мкр В, Солнечный).",
+        systemInstruction: "Ты - ИИ 'Зеленого Навигатора', созданный Егором Токаревым (9И). Ты эксперт по Троицку. Ты знаешь про снимки Sentinel и Maxar, которые загружены в систему. Отвечай на вопросы о вырубке леса в Троицке и пунктах переработки (мкр В, Солнечный).",
         tools: [{ googleSearch: {} }]
       }
     });
