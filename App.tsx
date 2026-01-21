@@ -6,10 +6,11 @@ import { ModuleA } from './components/ModuleA';
 import { ModuleB } from './components/ModuleB';
 import { ModuleC } from './components/ModuleC';
 import { ModuleAssistant } from './components/ModuleAssistant';
-import { Sparkles, GraduationCap } from 'lucide-react';
+import { Sparkles, GraduationCap, Info, X, ExternalLink } from 'lucide-react';
 
 const App: React.FC = () => {
   const [activeModule, setActiveModule] = useState<ModuleType>('retrospective');
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
 
   const renderModule = () => {
     switch (activeModule) {
@@ -23,6 +24,63 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-emerald-500/30">
+      {/* About Modal */}
+      {isAboutOpen && (
+        <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xl animate-in fade-in duration-300">
+          <div className="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-[3rem] shadow-2xl p-8 md:p-12 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-8">
+              <button onClick={() => setIsAboutOpen(false)} className="p-3 bg-slate-800 hover:bg-slate-700 rounded-2xl text-slate-400 hover:text-white transition-all">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="space-y-8">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 bg-emerald-600 rounded-[1.5rem] flex items-center justify-center shadow-2xl shadow-emerald-900/40">
+                  <Sparkles className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-3xl font-black text-white uppercase tracking-tighter">О проекте</h2>
+                  <p className="text-emerald-500 text-[10px] font-black uppercase tracking-widest mt-1">Зеленый Навигатор v2.0</p>
+                </div>
+              </div>
+
+              <div className="prose prose-invert max-w-none space-y-6">
+                <p className="text-slate-300 font-bold leading-relaxed">
+                  Данная геоинформационная система разработана для мониторинга антропогенной нагрузки на лесные экосистемы г. Троицка. Мы используем исторические спутниковые снимки (Landsat, Sentinel-2) и современные картографические данные 2ГИС для анализа динамики озеленения.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-6 bg-slate-950 rounded-3xl border border-slate-800">
+                    <h4 className="text-[10px] font-black text-emerald-400 uppercase mb-3 tracking-widest">Инструкция</h4>
+                    <ul className="text-xs text-slate-400 space-y-2 font-bold">
+                      <li className="flex items-start gap-2">• Используйте слайдер в «Истории» для сравнения 2000 и 2025 гг.</li>
+                      <li className="flex items-start gap-2">• Зеленые маркеры — это пункты приема вторсырья в Троицке.</li>
+                      <li className="flex items-start gap-2">• AI Гид ответит на вопросы по экологии ТиНАО.</li>
+                    </ul>
+                  </div>
+                  <div className="p-6 bg-slate-950 rounded-3xl border border-slate-800">
+                    <h4 className="text-[10px] font-black text-indigo-400 uppercase mb-3 tracking-widest">Разработчик</h4>
+                    <p className="text-xs text-slate-100 font-black mb-1">Токарев Егор</p>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase">Ученик 9 «И» класса</p>
+                    <p className="text-[9px] text-emerald-500/60 mt-4 flex items-center gap-1 uppercase font-black">
+                      <ExternalLink className="w-3 h-3" /> ГИС-аналитик
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => setIsAboutOpen(false)}
+                className="w-full py-5 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-900/20 uppercase tracking-[0.2em] text-xs"
+              >
+                Вернуться к системе
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-1">
         <aside className="hidden lg:flex flex-col w-80 bg-slate-900 border-r border-slate-800 p-8 sticky top-0 h-screen overflow-y-auto">
           <div className="flex items-center gap-3 mb-10">
@@ -65,6 +123,14 @@ const App: React.FC = () => {
                 </div>
               </button>
             ))}
+            
+            <button
+              onClick={() => setIsAboutOpen(true)}
+              className="w-full flex items-center gap-4 p-4 rounded-2xl border border-transparent text-slate-500 hover:bg-slate-800 hover:text-slate-200 transition-all mt-4"
+            >
+              <Info className="w-5 h-5" />
+              <div className="font-black text-xs uppercase tracking-widest">О проекте</div>
+            </button>
           </nav>
         </aside>
 
@@ -82,6 +148,9 @@ const App: React.FC = () => {
           </div>
           <span className="font-black text-sm uppercase tracking-tighter">Зеленый Навигатор</span>
         </div>
+        <button onClick={() => setIsAboutOpen(true)} className="p-2 text-slate-400">
+          <Info className="w-5 h-5" />
+        </button>
       </header>
 
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 flex justify-around items-center px-4 py-3 z-[2000] pb-safe-area">
